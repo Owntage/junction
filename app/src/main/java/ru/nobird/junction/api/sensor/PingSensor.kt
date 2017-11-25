@@ -23,7 +23,7 @@ class PingSensor(private val mds: Mds, private val serial: String) {
                 Observable.create<Long> { c ->
                     mds.get(FormatHelper.SCHEME_PREFIX + serial + PATH,null, object : MdsResponseListener {
                         override fun onSuccess(s: String) {
-                            c.onNext(System.nanoTime() - start)
+                            c.onNext((System.nanoTime() - start) / 2)
                         }
 
                         override fun onError(e: MdsException) {
