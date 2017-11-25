@@ -1,12 +1,12 @@
 package ru.nobird.junction.api
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.polidea.rxandroidble.RxBleDevice
-import com.polidea.rxandroidble.scan.ScanResult
 
-class MoveSenseDevice(scanResult: ScanResult) {
-    var rssi = scanResult.rssi
-    var macAddress = scanResult.bleDevice.macAddress
-    var name = scanResult.bleDevice.name
+class MoveSenseDevice(val rssi: Int,
+                      val macAddress: String,
+                      val name: String?) : Parcelable {
     var connectedSerial: String? = null
 
     fun isConnected(): Boolean {
@@ -31,5 +31,24 @@ class MoveSenseDevice(scanResult: ScanResult) {
                 return true
 
         return false
+    }
+
+    override fun hashCode() = macAddress.hashCode()
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(rssi)
+        parcel.writeString(macAddress)
+        parcel.writeString(name)
+        parcel.writeString(connectedSerial)
+    }
+
+    override fun describeContents() = 0
+
+    companion object CREATOR : Parcelable.Creator<MoveSenseDevice> {
+        override fun createFromParcel(parcel: Parcel)
+                = MoveSenseDevice(parcel.readInt(), parcel.readString(), parcel.readString()).apply {
+            connectedSerial = parcel.readString()
+        }
+
+        override fun newArray(size: Int) = arrayOfNulls<MoveSenseDevice>(size)
     }
 }
