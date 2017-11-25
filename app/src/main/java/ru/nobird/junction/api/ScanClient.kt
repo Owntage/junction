@@ -17,16 +17,14 @@ class ScanClient(context: Context) {
                         // .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES) // change if needed
                         .build()
                 // add filters if needed
-        ).subscribe(
-                { scanResult ->
+        ).subscribe({ scanResult ->
                     Log.d(TAG, "Scan result: " + scanResult)
 
                     if (scanResult.bleDevice?.name?.startsWith(PREFIX) == true) {
                         val msd = MoveSenseDevice(scanResult)
                         listener.found(msd)
                     }
-                },
-                { throwable ->
+                }, { throwable ->
                     Log.e(TAG, "Scan error: " + throwable)
                     disconnect()
                 }
