@@ -18,7 +18,8 @@ class Connection(val device: MoveSenseDevice, val mds: Mds) {
     }
 
     fun unsubscribe() {
-
+        avSubscription?.unsubscribe()
+        laSubscription?.unsubscribe()
     }
 
     fun attach(listener: ConnectionListener) {
