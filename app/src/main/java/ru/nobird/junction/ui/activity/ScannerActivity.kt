@@ -23,9 +23,10 @@ class ScannerActivity : BasePresenterActivity<ScannerPresenter, ScannerView>(), 
         showProgressDialogFragment(PROGRESS_DIALOG_TAG, getString(R.string.connection_progress_title), getString(R.string.connection_progress_msg))
     }
 
-    override fun onSuccess() {
+    override fun onSuccess(serial: String) {
         hideProgressDialogFragment(PROGRESS_DIALOG_TAG)
         Snackbar.make(findViewById(android.R.id.content), "Success", Snackbar.LENGTH_LONG).show()
+        ConnectionActivity.show(this, serial)
     }
 
     override fun onError() {

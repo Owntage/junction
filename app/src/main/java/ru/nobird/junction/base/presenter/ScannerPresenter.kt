@@ -39,7 +39,7 @@ class ScannerPresenter: PresenterBase<ScannerView>() {
     private fun connectToDevice(device: MoveSenseDevice) {
         view?.onLoading()
         connectManager.connect(device).observeOn(AndroidSchedulers.mainThread()).subscribe({
-            view?.onSuccess()
+            view?.onSuccess(it)
         }, {
             it.printStackTrace()
             view?.onError()

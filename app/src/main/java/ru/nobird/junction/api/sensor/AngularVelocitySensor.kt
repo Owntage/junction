@@ -3,9 +3,11 @@ package ru.nobird.junction.api.sensor
 import android.util.Log
 import com.google.gson.Gson
 import com.movesense.mds.*
+import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
+import ru.nobird.junction.model.AngularVelocity
 import ru.nobird.junction.util.FormatHelper
 import ru.nobird.junction.model.InfoResponse
-import ru.nobird.junction.model.LinearAcceleration
 
 class AngularVelocitySensor(private val mds: Mds, private val serial: String) {
     private var avSubscription: MdsSubscription? = null
@@ -27,26 +29,23 @@ class AngularVelocitySensor(private val mds: Mds, private val serial: String) {
         })
     }
 
-    fun subscribe(rate: Int, listener: Any)  {
+    fun subscribe(rate: Int): Observable<AngularVelocity.Array> = Observable.create<AngularVelocity.Array> { c ->
         avSubscription = mds.subscribe(FormatHelper.URI_EVENT_LISTENER,
                 FormatHelper.formatContractToJson(serial, PATH + rate),
                 object : MdsNotificationListener {
                     override fun onNotification(data: String) {
                         Log.d(TAG, "onSuccess(): " + data)
-
-                        val linearAccelerationData = Gson().fromJson(data, LinearAcceleration::class.java)
-
-                        val arrayData = linearAccelerationData?.body?.array?.get(0)
-
-                        // vector here
-
+                        val linearAccelerationData = Gson().fromJson(data, AngularVelocity::class.java)
+                        val arrayData = linearAccelerationData.body.array[0]
+                        c.onNext(arrayData)
                     }
 
                     override fun onError(error: MdsException) {
                         Log.e(TAG, "onError(): ", error)
+                        c.onError(error)
                     }
                 })
-    }
+    }.subscribeOn(Schedulers.io())
 
     fun unsubscribe() {
         avSubscription?.unsubscribe()
