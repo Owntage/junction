@@ -1,7 +1,6 @@
 package ru.nobird.junction.api
 
 import android.content.Context
-import android.util.Log
 import com.polidea.rxandroidble.RxBleClient
 import com.polidea.rxandroidble.scan.ScanSettings
 import rx.Subscription
