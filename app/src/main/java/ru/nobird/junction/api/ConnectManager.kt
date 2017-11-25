@@ -15,7 +15,7 @@ class ConnectManager(context: Context) {
         if (device.isConnected())
             return null
 
-        val connection = Connection(device)
+        val connection = Connection(device, mds)
         val bleDevice = mBleClient.getBleDevice(device.macAddress)
         mds.connect(bleDevice.macAddress, object : MdsConnectionListener {
 
