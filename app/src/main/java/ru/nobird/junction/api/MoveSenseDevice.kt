@@ -32,4 +32,6 @@ class MoveSenseDevice(scanResult: ScanResult) {
 
         return false
     }
+
+    override fun hashCode() = macAddress.hashCode()
 }

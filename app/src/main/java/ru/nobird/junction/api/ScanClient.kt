@@ -10,7 +10,7 @@ class ScanClient(context: Context) {
     private val mBleClient = RxBleClient.create(context)
     private var mScanSubscription: Subscription? = null
 
-    fun connect(listener: ScanListener) {
+    fun connect(listener: (MoveSenseDevice) -> Unit) {
         mScanSubscription = mBleClient.scanBleDevices(
                 ScanSettings.Builder()
                         // .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY) // change if needed
@@ -22,7 +22,7 @@ class ScanClient(context: Context) {
 
                     if (scanResult.bleDevice?.name?.startsWith(PREFIX) == true) {
                         val msd = MoveSenseDevice(scanResult)
-                        listener.found(msd)
+                        listener(msd)
                     }
                 }, { throwable ->
                     Log.e(TAG, "Scan error: " + throwable)

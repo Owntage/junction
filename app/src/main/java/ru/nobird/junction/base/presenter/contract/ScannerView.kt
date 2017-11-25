@@ -1,5 +1,7 @@
 package ru.nobird.junction.base.presenter.contract
 
+import ru.nobird.junction.ui.DeviceAdapter
+
 interface ScannerView {
-    fun setDeviceList()
+    fun setDeviceAdapter(adapter: DeviceAdapter)
 }
