@@ -2,21 +2,33 @@ package ru.nobird.junction.api.sensor
 
 import android.util.Log
 import com.google.gson.Gson
-import com.movesense.mds.Mds
-import com.movesense.mds.MdsException
-import com.movesense.mds.MdsNotificationListener
-import com.movesense.mds.MdsSubscription
+import com.movesense.mds.*
+import ru.nobird.junction.model.InfoResponse
 import ru.nobird.junction.model.LinearAcceleration
 import ru.nobird.junction.util.FormatHelper
 
-/**
- * Created by lytr777 on 25/11/2017.
- */
-class LinearAccelerationSensor {
+class LinearAccelerationSensor(private val mds: Mds, private val serial: String) {
+    private var laSubscription: MdsSubscription? = null
+    var rates: IntArray? = null
+        private set
 
+    init {
+        mds.get(FormatHelper.SCHEME_PREFIX + serial + INFO_PATH, null, object : MdsResponseListener {
+            override fun onSuccess(data: String) {
+                Log.d(TAG, "onSuccess(): " + data)
 
-    fun getSubscribe(mds: Mds, serial: String, rate: Int, listener: Any): MdsSubscription {
-        return mds.subscribe(FormatHelper.URI_EVENT_LISTENER,
+                val infoResponse = Gson().fromJson(data, InfoResponse::class.java)
+                rates = infoResponse.content.sampleRates
+            }
+
+            override fun onError(error: MdsException) {
+                Log.e(TAG, "onError(): ", error)
+            }
+        })
+    }
+
+    fun subscribe(rate: Int, listener: Any) {
+        laSubscription = mds.subscribe(FormatHelper.URI_EVENT_LISTENER,
                 FormatHelper.formatContractToJson(serial, PATH + rate),
                 object : MdsNotificationListener {
                     override fun onNotification(data: String) {
@@ -33,6 +45,10 @@ class LinearAccelerationSensor {
                         Log.e(TAG, "onError(): ", error)
                     }
                 })
+    }
+
+    fun unsubscribe() {
+        laSubscription?.unsubscribe()
     }
 
     companion object {

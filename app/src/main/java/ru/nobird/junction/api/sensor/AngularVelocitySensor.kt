@@ -7,32 +7,28 @@ import ru.nobird.junction.util.FormatHelper
 import ru.nobird.junction.model.InfoResponse
 import ru.nobird.junction.model.LinearAcceleration
 
-/**
- * Created by lytr777 on 25/11/2017.
- */
-class AngularVelocitySensor {
+class AngularVelocitySensor(private val mds: Mds, private val serial: String) {
+    private var avSubscription: MdsSubscription? = null
+    var rates: IntArray? = null
+        private set
 
-    fun getRates(mds: Mds, serial: String) {
+    init {
         mds.get(FormatHelper.SCHEME_PREFIX + serial + INFO_PATH, null, object : MdsResponseListener {
             override fun onSuccess(data: String) {
                 Log.d(TAG, "onSuccess(): " + data)
 
                 val infoResponse = Gson().fromJson(data, InfoResponse::class.java)
-
-//                for (inforate in infoResponse.content.sampleRates) {
-//                    rates.add(inforate.toString())
-//                }
+                rates = infoResponse.content.sampleRates
             }
 
             override fun onError(error: MdsException) {
                 Log.e(TAG, "onError(): ", error)
-
             }
         })
     }
 
-    fun getSubscribe(mds: Mds, serial: String, rate: Int, listener: Any): MdsSubscription {
-        return mds.subscribe(FormatHelper.URI_EVENT_LISTENER,
+    fun subscribe(rate: Int, listener: Any) {
+        avSubscription = mds.subscribe(FormatHelper.URI_EVENT_LISTENER,
                 FormatHelper.formatContractToJson(serial, PATH + rate),
                 object : MdsNotificationListener {
                     override fun onNotification(data: String) {
@@ -50,6 +46,10 @@ class AngularVelocitySensor {
                         Log.e(TAG, "onError(): ", error)
                     }
                 })
+    }
+
+    fun unsubscribe() {
+        avSubscription?.unsubscribe()
     }
 
     companion object {
