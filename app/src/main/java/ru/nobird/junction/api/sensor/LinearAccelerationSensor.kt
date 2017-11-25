@@ -35,7 +35,8 @@ class LinearAccelerationSensor(private val mds: Mds, private val serial: String)
                         Log.d(TAG, "onSuccess(): " + data)
 
                         val linearAccelerationData = Gson().fromJson(data, LinearAcceleration::class.java)
-                        val arrayData = linearAccelerationData?.body?.array?.get(0)
+                        val arrayData = linearAccelerationData.body.array[0]
+
 
                         // vector here
 

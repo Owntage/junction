@@ -27,7 +27,7 @@ class AngularVelocitySensor(private val mds: Mds, private val serial: String) {
         })
     }
 
-    fun subscribe(rate: Int, listener: Any) {
+    fun subscribe(rate: Int, listener: Any)  {
         avSubscription = mds.subscribe(FormatHelper.URI_EVENT_LISTENER,
                 FormatHelper.formatContractToJson(serial, PATH + rate),
                 object : MdsNotificationListener {
@@ -53,9 +53,9 @@ class AngularVelocitySensor(private val mds: Mds, private val serial: String) {
     }
 
     companion object {
-        private val TAG = "AngularVelocityS"
+        private const val TAG = "AngularVelocityS"
 
-        private val PATH = "Meas/Gyro/"
-        private val INFO_PATH = "/Meas/Gyro/Info"
+        private const val PATH = "Meas/Gyro/"
+        private const val INFO_PATH = "/Meas/Gyro/Info"
     }
 }
