@@ -1,7 +1,6 @@
 package ru.nobird.junction.ui
 
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,17 +8,20 @@ import kotlinx.android.synthetic.main.item_device.view.*
 import ru.nobird.junction.R
 import ru.nobird.junction.api.MoveSenseDevice
 
-class DeviceAdapter: RecyclerView.Adapter<DeviceAdapter.DeviceViewHolder>() {
+class DeviceAdapter(private val onClick: (MoveSenseDevice) -> Unit): RecyclerView.Adapter<DeviceAdapter.DeviceViewHolder>(){
     private val devices = ArrayList<MoveSenseDevice>()
 
     override fun getItemCount() = devices.size
 
     fun add(device: MoveSenseDevice) {
-        Log.d(javaClass.canonicalName, "$device")
         if (!devices.contains(device)) {
             devices.add(device)
             notifyItemInserted(devices.size - 1)
         }
+    }
+
+    fun setData(devices: List<MoveSenseDevice>) {
+        devices.forEach { add(it) }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
@@ -28,8 +30,9 @@ class DeviceAdapter: RecyclerView.Adapter<DeviceAdapter.DeviceViewHolder>() {
     override fun onBindViewHolder(holder: DeviceViewHolder, p: Int) {
         holder.mac.text = devices[p].macAddress
         holder.name.text = devices[p].name
-    }
 
+        holder.itemView.setOnClickListener { onClick(devices[p]) }
+    }
 
     class DeviceViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val mac = view.mac

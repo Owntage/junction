@@ -6,49 +6,36 @@ import com.movesense.mds.Mds
 import com.movesense.mds.MdsConnectionListener
 import com.movesense.mds.MdsException
 import com.polidea.rxandroidble.RxBleClient
+import io.reactivex.Single
 
 class ConnectManager(context: Context) {
     private val mds = Mds.builder().build(context)
     private val mBleClient = RxBleClient.create(context)
 
-    fun connect(device: MoveSenseDevice): Connection? {
-        if (device.isConnected())
-            return null
-
-        val connection = Connection(device)
+    fun connect(device: MoveSenseDevice): Single<String> = Single.create { s ->
         val bleDevice = mBleClient.getBleDevice(device.macAddress)
         mds.connect(bleDevice.macAddress, object : MdsConnectionListener {
-
-            override fun onConnect(s: String) {
-                Log.d(TAG, "onConnect: " + s)
-            }
+            override fun onConnect(macAddress: String) = Unit
 
             override fun onConnectionComplete(macAddress: String, serial: String) {
-                Log.d(TAG, "onConnectionComplete: " + serial)
+                Log.d(TAG, "onConnectionComplete: $macAddress $serial")
 
                 device.markConnected(serial)
-                connection.connected()
+                s.onSuccess(serial)
             }
 
-            override fun onError(error: MdsException) {
-                Log.d(TAG, "onError: " + error)
-
-                connection.failed(error)
-            }
+            override fun onError(error: MdsException) = s.onError(error)
 
             override fun onDisconnect(bleAddress: String) {
-                Log.d(TAG, "onDisconnect: " + bleAddress)
-
                 device.markDisconnected()
-                connection.disconnected()
+                s.onError(IllegalStateException("Disconnected $bleAddress"))
             }
         })
-        return connection
     }
 
-    fun disconnect(connection: Connection) {
-        if (connection.device.isConnected())
-            mds.disconnect(connection.device.macAddress)
+    fun disconnect(device: MoveSenseDevice) {
+        if (device.isConnected())
+            mds.disconnect(device.macAddress)
     }
 
     companion object {
