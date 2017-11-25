@@ -1,6 +1,7 @@
 package ru.nobird.junction.ui
 
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ class DeviceAdapter: RecyclerView.Adapter<DeviceAdapter.DeviceViewHolder>() {
     override fun getItemCount() = devices.size
 
     fun add(device: MoveSenseDevice) {
+        Log.d(javaClass.canonicalName, "$device")
         if (!devices.contains(device)) {
             devices.add(device)
             notifyItemInserted(devices.size - 1)

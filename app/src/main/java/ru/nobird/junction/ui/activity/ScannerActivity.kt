@@ -1,6 +1,10 @@
 package ru.nobird.junction.ui.activity
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_scanner.*
 import ru.nobird.junction.R
@@ -15,10 +19,23 @@ class ScannerActivity : BasePresenterActivity<ScannerPresenter, ScannerView>(), 
 
         setContentView(R.layout.activity_scanner)
         deviceList.layoutManager = LinearLayoutManager(this)
+        requestNeededPermissions()
     }
 
     override fun setDeviceAdapter(adapter: DeviceAdapter) {
         deviceList.adapter = adapter
+    }
+
+    private fun requestNeededPermissions() {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            // No explanation needed, we can request the permission.
+            ActivityCompat.requestPermissions(this,
+                    arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), 1)
+
+        }
     }
 
     override fun onStart() {
