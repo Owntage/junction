@@ -11,48 +11,44 @@ class ConnectManager(context: Context) {
     private val mds = Mds.builder().build(context)
     private val mBleClient = RxBleClient.create(context)
 
-    private var connectedDevice: MoveSenseDevice? = null
+    fun connect(device: MoveSenseDevice): Connection? {
+        if (device.isConnected())
+            return null
 
-    fun connect(device: MoveSenseDevice, listener: ConnectionListener) {
-        disconnect()
-
+        val connection = Connection(device)
         val bleDevice = mBleClient.getBleDevice(device.macAddress)
         mds.connect(bleDevice.macAddress, object : MdsConnectionListener {
 
             override fun onConnect(s: String) {
                 Log.d(TAG, "onConnect: " + s)
-
-                connectedDevice = device
-                listener.connecting(device)
             }
 
             override fun onConnectionComplete(macAddress: String, serial: String) {
                 Log.d(TAG, "onConnectionComplete: " + serial)
 
                 device.markConnected(serial)
-                listener.connected(device)
+                connection.connected()
             }
 
             override fun onError(error: MdsException) {
                 Log.d(TAG, "onError: " + error)
 
-                listener.failed(error)
+                connection.failed(error)
             }
 
             override fun onDisconnect(bleAddress: String) {
                 Log.d(TAG, "onDisconnect: " + bleAddress)
 
                 device.markDisconnected()
-                listener.disconnected(device)
+                connection.disconnected()
             }
         })
+        return connection
     }
 
-    fun disconnect() {
-        connectedDevice?.let {
-            mds.disconnect(it.macAddress)
-            connectedDevice = null
-        }
+    fun disconnect(connection: Connection) {
+        if (connection.device.isConnected())
+            mds.disconnect(connection.device.macAddress)
     }
 
     companion object {
