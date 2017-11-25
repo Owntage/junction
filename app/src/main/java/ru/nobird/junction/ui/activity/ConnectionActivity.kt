@@ -3,6 +3,7 @@ package ru.nobird.junction.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import kotlinx.android.synthetic.main.activity_plot.*
 import ru.nobird.junction.R
 import ru.nobird.junction.api.MoveSenseDevice
@@ -38,8 +39,9 @@ class ConnectionActivity: BasePresenterActivity<ConnectionPresenter, ConnectionV
     }
 
     override fun onData(v3: AngularVelocity.Array) {
-        val s = Math.sqrt(v3.x * v3.x + v3.y * v3.y + v3.z * v3.z).toFloat()
+        val s = Math.sqrt(v3.x * v3.x + v3.y * v3.y + v3.z * v3.z).toFloat() / 10
         plot.data.add(TimeData(System.nanoTime(), s))
+        plot.invalidate()
     }
 
     override fun onSuccess() {

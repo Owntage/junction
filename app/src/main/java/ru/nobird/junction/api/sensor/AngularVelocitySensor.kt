@@ -17,7 +17,7 @@ class AngularVelocitySensor(private val mds: Mds, private val serial: String) {
     init {
         mds.get(FormatHelper.SCHEME_PREFIX + serial + INFO_PATH, null, object : MdsResponseListener {
             override fun onSuccess(data: String) {
-                Log.d(TAG, "onSuccess(): " + data)
+//                Log.d(TAG, "onSuccess(): " + data)
 
                 val infoResponse = Gson().fromJson(data, InfoResponse::class.java)
                 rates = infoResponse.content.sampleRates
@@ -34,7 +34,7 @@ class AngularVelocitySensor(private val mds: Mds, private val serial: String) {
                 FormatHelper.formatContractToJson(serial, PATH + rate),
                 object : MdsNotificationListener {
                     override fun onNotification(data: String) {
-                        Log.d(TAG, "onSuccess(): " + data)
+//                        Log.d(TAG, "onSuccess(): " + data)
                         val linearAccelerationData = Gson().fromJson(data, AngularVelocity::class.java)
                         val arrayData = linearAccelerationData.body.array[0]
                         c.onNext(arrayData)
