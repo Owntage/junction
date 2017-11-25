@@ -9,6 +9,8 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_plot.*
 import ru.nobird.junction.R
+import ru.nobird.junction.model.TimeData
+import java.sql.Time
 
 class PlotActivity : AppCompatActivity() {
 
@@ -16,7 +18,7 @@ class PlotActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_plot)
 
-        val behavior = PublishSubject.create<Float>()
+        val behavior = PublishSubject.create<TimeData>()
         behavior
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -29,7 +31,7 @@ class PlotActivity : AppCompatActivity() {
             var i = 0.0
             while (true) {
                 i += 1
-                behavior.onNext(1f - (Math.cos(i / 25).toFloat()))
+                behavior.onNext(TimeData(System.nanoTime(), 1f - (Math.cos(i / 25).toFloat())))
                 Thread.sleep(10L)
             }
         }).start()

@@ -1,7 +1,11 @@
 package ru.nobird.junction.data
 
-class PlotBuffer(size: Int) {
-    private val buff = FloatArray(size * 3) { 0f }
+class PlotBuffer<T>(size: Int, sample: T) {
+    private val buff = ArrayList<T>(size * 3).apply {
+        for (a in 0..size) {
+            add(sample)
+        }
+    }
     private var start = 0
     private var end = size
 
@@ -12,7 +16,7 @@ class PlotBuffer(size: Int) {
             end - start
         }
 
-    fun add(y: Float) {
+    fun add(y: T) {
         if (end < buff.size) {
             end++
         } else {
