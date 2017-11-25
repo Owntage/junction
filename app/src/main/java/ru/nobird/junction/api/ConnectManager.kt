@@ -9,14 +9,14 @@ import com.polidea.rxandroidble.RxBleClient
 
 class ConnectManager(context: Context) {
     private val mds = Mds.builder().build(context)
-    private val mBleClient = RxBleClient.create(context)
+    private val bleClient = RxBleClient.create(context)
 
     fun connect(device: MoveSenseDevice): Connection? {
         if (device.isConnected())
             return null
 
         val connection = Connection(device, mds)
-        val bleDevice = mBleClient.getBleDevice(device.macAddress)
+        val bleDevice = bleClient.getBleDevice(device.macAddress)
         mds.connect(bleDevice.macAddress, object : MdsConnectionListener {
 
             override fun onConnect(s: String) {

@@ -3,10 +3,8 @@ package ru.nobird.junction.api
 import com.movesense.mds.Mds
 import com.movesense.mds.MdsException
 import com.movesense.mds.MdsSubscription
+import ru.nobird.junction.api.sensor.AngularVelocitySensor
 
-/**
- * Created by lytr777 on 25/11/2017.
- */
 class Connection(val device: MoveSenseDevice, val mds: Mds) {
     private var listener: ConnectionListener? = null
     private var avSubscription: MdsSubscription? = null

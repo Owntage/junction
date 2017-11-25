@@ -1,4 +1,4 @@
-package ru.nobird.junction.api
+package ru.nobird.junction.util
 
 /**
  * Created by lytr777 on 25/11/2017.
@@ -15,4 +15,5 @@ object FormatHelper {
     }
 
     val SCHEME_PREFIX = "suunto://"
+    val URI_EVENT_LISTENER = "suunto://MDS/EventListener"
 }

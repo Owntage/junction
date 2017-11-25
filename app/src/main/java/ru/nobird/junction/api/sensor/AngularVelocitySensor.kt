@@ -3,7 +3,7 @@ package ru.nobird.junction.api.sensor
 import android.util.Log
 import com.google.gson.Gson
 import com.movesense.mds.*
-import ru.nobird.junction.api.FormatHelper
+import ru.nobird.junction.util.FormatHelper
 import ru.nobird.junction.model.InfoResponse
 import ru.nobird.junction.model.LinearAcceleration
 
@@ -31,34 +31,29 @@ class AngularVelocitySensor {
         })
     }
 
-    fun subscribe(mds: Mds, serial: String, rate: Int, listener: Any): MdsSubscription {
-        return mds.subscribe(URI_EVENT_LISTENER, FormatHelper.formatContractToJson(serial, PATH + rate), object : MdsNotificationListener {
-            override fun onNotification(data: String) {
-                Log.d(TAG, "onSuccess(): " + data)
+    fun getSubscribe(mds: Mds, serial: String, rate: Int, listener: Any): MdsSubscription {
+        return mds.subscribe(FormatHelper.URI_EVENT_LISTENER,
+                FormatHelper.formatContractToJson(serial, PATH + rate),
+                object : MdsNotificationListener {
+                    override fun onNotification(data: String) {
+                        Log.d(TAG, "onSuccess(): " + data)
 
-                val linearAccelerationData = Gson().fromJson(data, LinearAcceleration::class.java)
+                        val linearAccelerationData = Gson().fromJson(data, LinearAcceleration::class.java)
 
-                    val arrayData = linearAccelerationData?.body?.array?.get(0)
+                        val arrayData = linearAccelerationData?.body?.array?.get(0)
 
-//                    xAxisLinearAccTextView.setText(String.format(Locale.getDefault(),
-//                            "x: %.6f", arrayData.x))
-//                    yAxisLinearAccTextView.setText(String.format(Locale.getDefault(),
-//                            "y: %.6f", arrayData.y))
-//                    zAxisLinearAccTextView.setText(String.format(Locale.getDefault(),
-//                            "z: %.6f", arrayData.z))
+                        // vector here
 
-            }
+                    }
 
-            override fun onError(error: MdsException) {
-                Log.e(TAG, "onError(): ", error)
-            }
-        })
+                    override fun onError(error: MdsException) {
+                        Log.e(TAG, "onError(): ", error)
+                    }
+                })
     }
 
     companion object {
-        private val TAG = "AngularVelocitySensor"
-
-        val URI_EVENT_LISTENER = "suunto://MDS/EventListener"
+        private val TAG = "AngularVelocityS"
 
         private val PATH = "Meas/Gyro/"
         private val INFO_PATH = "/Meas/Gyro/Info"
