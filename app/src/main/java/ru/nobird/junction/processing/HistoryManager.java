@@ -53,7 +53,7 @@ public class HistoryManager implements Updatable {
             }
         }
         if (matchCounter == 0) return 1.0f;
-        return 1.0f - (float) matchCounter / (float) idealSize;
+        return (float) matchCounter / (float) idealSize;
     }
 
     public HistoryData getNewerThan(long timestampMs) {

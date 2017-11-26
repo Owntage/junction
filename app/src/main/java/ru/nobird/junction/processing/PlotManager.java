@@ -84,7 +84,7 @@ public class PlotManager {
             float statistic2 = idealHistoryManager.countStatistic(actualHistoryManager);
             myTargetSubject.onNext(new PlotData(
                     actualHistoryInterpolator.getMagnitude(), idealHistoryInterpolator.getMagnitude(),
-                    Math.sqrt(statistic1 * statistic2)));
+                    1.0f - Math.sqrt(statistic1 * statistic2)));
         }
     }
 }
