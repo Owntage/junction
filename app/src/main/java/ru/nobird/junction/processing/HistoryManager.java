@@ -1,0 +1,67 @@
+package ru.nobird.junction.processing;
+
+import java.util.LinkedList;
+
+/**
+ * Created by Owntage on 11/25/2017.
+ */
+
+public class HistoryManager implements Updatable {
+    public static final long HISTORY_LENGTH_MS = 15_000;
+
+    private final LinkedList<HistoryData> myHistory = new LinkedList<>();
+
+    public class HistoryData {
+        public final long timestamp;
+        public final boolean strong;
+
+        public HistoryData(long timestamp, boolean strong) {
+            this.timestamp = timestamp;
+            this.strong = strong;
+        }
+    }
+
+    public void addToHistory(HistoryData data) {
+        myHistory.addLast(data);
+    }
+
+    public HistoryData getNewerThan(long timestampMs) {
+        HistoryData bestMatch = null;
+        for (HistoryData data : myHistory) {
+            if (data.timestamp >= timestampMs) {
+                if (bestMatch == null) bestMatch = data;
+                if (data.timestamp < bestMatch.timestamp) {
+                    bestMatch = data;
+                }
+            }
+        }
+        if (bestMatch == null) {
+            bestMatch = myHistory.size() > 0 ? myHistory.getLast() : new HistoryData(0, false);
+        }
+        return bestMatch;
+    }
+
+    public HistoryData getOlderThan(long timestampMs) {
+        HistoryData bestMatch = null;
+        for (HistoryData data : myHistory) {
+            if (data.timestamp <= timestampMs) {
+                if (bestMatch == null) bestMatch = data;
+                if (data.timestamp > bestMatch.timestamp) {
+                    bestMatch = data;
+                }
+            }
+        }
+        if (bestMatch == null) {
+            bestMatch = myHistory.size() > 0 ? myHistory.getFirst() : new HistoryData(0, false);
+        }
+        return bestMatch;
+    }
+
+    @Override
+    public void update(long timestampMs) {
+        if (myHistory.size() == 0) return;
+        if (timestampMs - myHistory.getFirst().timestamp > HISTORY_LENGTH_MS) {
+            myHistory.pollFirst();
+        }
+    }
+}
