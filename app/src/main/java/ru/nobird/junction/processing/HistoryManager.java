@@ -52,6 +52,7 @@ public class HistoryManager implements Updatable {
                 matchCounter++;
             }
         }
+        if (matchCounter == 0) return 1.0f;
         return 1.0f - (float) matchCounter / (float) idealSize;
     }
 
