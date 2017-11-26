@@ -34,7 +34,14 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         color = 0x7715C7CA
     }
 
+    private val bg = Paint().apply {
+        color = 0xFFEE3853.toInt()
+    }
+
     override fun onDraw(canvas: Canvas) {
+        bg.alpha = (0x33 * data[data.size - 1].quality).toInt()
+        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), bg)
+
         val dx = width.toFloat() / data.size
         mult = height.toFloat() / 2
         for (i in 1 until data.size) {
