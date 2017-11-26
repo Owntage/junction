@@ -3,6 +3,7 @@ package ru.nobird.junction.processing;
 import io.reactivex.subjects.PublishSubject;
 import ru.nobird.junction.model.PlotData;
 import ru.nobird.junction.model.Vec3f;
+import ru.nobird.junction.processing.HistoryManager.HistoryData;
 
 /**
  * Created by Owntage on 11/25/2017.
@@ -11,43 +12,54 @@ import ru.nobird.junction.model.Vec3f;
 public class PlotManager {
     private static final long PLOT_UPDATE_PERIOD_MS = 16L;
     private final PublishSubject<PlotData> myTargetSubject;
-    private final PingListener myPingListener;
+    private final PitchDetector myPitchDetector;
 
-    public PlotManager(PublishSubject<PlotData> targetSubject, PingListener pingListener) {
+    private final BeatGenerator beatGenerator;
+    private final HistoryManager historyManager = new HistoryManager();
+    private final HistoryInterpolator historyInterpolator = new HistoryInterpolator(historyManager);
+
+
+    public PlotManager(PublishSubject<PlotData> targetSubject) {
         myTargetSubject = targetSubject;
-        myPingListener = pingListener;
+        myPitchDetector = new PitchDetector(new PitchListener() {
+            @Override
+            public void onStrongBeat(long localTimestamp) {
+                //todo: write to history
+            }
+
+            @Override
+            public void onWeakBeat(long localTimestamp) {
+                //todo: write to history
+            }
+        });
+
+        beatGenerator = new BeatGenerator(60, 1, new PitchListener(){
+            @Override
+            public void onStrongBeat(long localTimestamp) {
+                HistoryData data = new HistoryData(localTimestamp, true);
+                historyManager.addToHistory(data);
+            }
+
+            @Override
+            public void onWeakBeat(long localTimestamp) {
+                HistoryData data = new HistoryData(localTimestamp, false);
+                historyManager.addToHistory(data);
+            }
+        });
     }
 
     public SensorDataListener getRealListener() {
-        return new SensorDataListener() {
-            @Override
-            public void onLinearAcceleration(Vec3f acceleration, long timestamp) {
-                //todo: finish
-            }
-
-            @Override
-            public void onAngularAcceleration(Vec3f acceleration, long timestamp) {
-                //todo: finish
-            }
-        };
+        return myPitchDetector.getSensorDataListener();
     }
 
-    public SensorDataListener getIdealListener() {
-        return new SensorDataListener() {
-
-            @Override
-            public void onLinearAcceleration(Vec3f acceleration, long timestamp) {
-                //todo: finish
-            }
-
-            @Override
-            public void onAngularAcceleration(Vec3f acceleration, long timestamp) {
-                //todo: finish
-            }
-        };
+    public PingListener getPingListener() {
+        return myPitchDetector.getPingListener();
     }
 
     public void update(long currentTimestamp) {
-        //todo:
+        beatGenerator.update(currentTimestamp);
+        historyManager.update(currentTimestamp);
+        historyInterpolator.update(currentTimestamp);
+        myTargetSubject.onNext(new PlotData(0, historyInterpolator.getMagnitude(), 1));
     }
 }

@@ -31,7 +31,19 @@ public class HistoryInterpolator implements Updatable {
 
         long historyTimestamp = timestampMs - LATENCY_MS;
         HistoryManager.HistoryData foundData = myHistoryManager.getNewerThan(historyTimestamp);
+
         long dt = foundData.timestamp - historyTimestamp;
+
+        if (Math.abs(dt) > HOLD_MS || !myHistoryManager.hasNewerThan(timestampMs)) {
+            myTargetMagnitude = 0;
+        } else {
+            if (foundData.strong) {
+                myTargetMagnitude = STRONG_MAGNITUDE;
+            } else {
+                myTargetMagnitude = WEAK_MAGNITUDE;
+            }
+        }
+
         float currentMagRatio = (float) dt;
         currentMagRatio = Math.abs(currentMagRatio);
         currentMagRatio /= F_HOLD_MS;

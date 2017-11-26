@@ -12,6 +12,7 @@ import ru.nobird.junction.base.presenter.ConnectionPresenter
 import ru.nobird.junction.base.presenter.PresenterFactory
 import ru.nobird.junction.base.presenter.contract.ConnectionView
 import ru.nobird.junction.model.AngularVelocity
+import ru.nobird.junction.model.PlotData
 import ru.nobird.junction.model.TimeData
 
 
@@ -38,9 +39,8 @@ class ConnectionActivity: BasePresenterActivity<ConnectionPresenter, ConnectionV
         setContentView(R.layout.activity_plot)
     }
 
-    override fun onData(v3: AngularVelocity.Array) {
-        val s = Math.sqrt(v3.x * v3.x + v3.y * v3.y + v3.z * v3.z).toFloat() / 10
-        plot.data.add(TimeData(System.nanoTime(), s))
+    override fun onData(pd: PlotData) {
+        plot.data.add(TimeData(System.nanoTime(), pd.idealMagnitude.toFloat()))
         plot.invalidate()
     }
 

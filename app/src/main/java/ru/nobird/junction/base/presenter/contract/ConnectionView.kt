@@ -1,9 +1,9 @@
 package ru.nobird.junction.base.presenter.contract
 
-import ru.nobird.junction.model.AngularVelocity
+import ru.nobird.junction.model.PlotData
 
 interface ConnectionView {
-    fun onData(v3: AngularVelocity.Array)
+    fun onData(pd: PlotData)
     fun onSuccess()
     fun onError()
 }

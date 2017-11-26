@@ -11,7 +11,7 @@ public class HistoryManager implements Updatable {
 
     private final LinkedList<HistoryData> myHistory = new LinkedList<>();
 
-    public class HistoryData {
+    public static class HistoryData {
         public final long timestamp;
         public final boolean strong;
 
@@ -23,6 +23,11 @@ public class HistoryManager implements Updatable {
 
     public void addToHistory(HistoryData data) {
         myHistory.addLast(data);
+    }
+
+    public boolean hasNewerThan(long timestampMs) {
+        if (myHistory.size() == 0) return false;
+        return myHistory.getLast().timestamp > timestampMs;
     }
 
     public HistoryData getNewerThan(long timestampMs) {
