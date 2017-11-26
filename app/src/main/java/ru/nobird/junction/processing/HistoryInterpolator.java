@@ -36,6 +36,19 @@ public class HistoryInterpolator implements Updatable {
         long dt = foundData.timestamp - historyTimestamp;
         long prevDt = historyTimestamp - prevData.timestamp;
 
+        if (myHistoryManager.hasOlderThan(historyTimestamp)) {
+            if (prevDt > 0 && prevDt < HOLD_MS) {
+                if (prevData.strong) {
+                    myCurrentMagnitude = STRONG_MAGNITUDE;
+                } else {
+                    myCurrentMagnitude = WEAK_MAGNITUDE;
+                }
+            } else {
+                myCurrentMagnitude = 0;
+            }
+        }
+
+        /*
         if (myHistoryManager.hasNewerThan(historyTimestamp)) {
             if (dt > 0) {
                 if (foundData.strong) {
@@ -55,6 +68,7 @@ public class HistoryInterpolator implements Updatable {
                 myCurrentMagnitude = 0;
             }
         }
+        */
 
         /*
 

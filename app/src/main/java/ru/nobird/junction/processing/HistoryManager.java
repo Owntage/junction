@@ -25,6 +25,11 @@ public class HistoryManager implements Updatable {
         myHistory.addLast(data);
     }
 
+    public boolean hasOlderThan(long timestampMs) {
+        if (myHistory.size() == 0) return false;
+        return myHistory.getFirst().timestamp < timestampMs;
+    }
+
     public boolean hasNewerThan(long timestampMs) {
         if (myHistory.size() == 0) return false;
         return myHistory.getLast().timestamp > timestampMs;
