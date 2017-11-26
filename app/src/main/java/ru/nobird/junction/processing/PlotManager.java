@@ -16,8 +16,11 @@ public class PlotManager {
     private final PitchDetector myPitchDetector;
 
     private final BeatGenerator beatGenerator;
-    private final HistoryManager historyManager = new HistoryManager();
-    private final HistoryInterpolator historyInterpolator = new HistoryInterpolator(historyManager);
+    private final HistoryManager idealHistoryManager = new HistoryManager();
+    private final HistoryManager actualHistoryManager = new HistoryManager();
+    private final HistoryInterpolator idealHistoryInterpolator = new HistoryInterpolator(idealHistoryManager);
+    private final HistoryInterpolator actualHistoryInterpolator = new HistoryInterpolator(actualHistoryManager);
+
 
     private final Object myLock = new Object();
 
@@ -28,7 +31,7 @@ public class PlotManager {
             public void onStrongBeat(long localTimestamp) {
                 synchronized (myLock) {
                     //todo: write to history
-                    historyManager.addToHistory(new HistoryData(localTimestamp, true));
+                    actualHistoryManager.addToHistory(new HistoryData(localTimestamp, true));
                 }
             }
 
@@ -36,7 +39,7 @@ public class PlotManager {
             public void onWeakBeat(long localTimestamp) {
                 synchronized (myLock) {
                     //todo: write to history
-                    historyManager.addToHistory(new HistoryData(localTimestamp, false));
+                    actualHistoryManager.addToHistory(new HistoryData(localTimestamp, false));
                 }
             }
         });
@@ -46,7 +49,7 @@ public class PlotManager {
             public void onStrongBeat(long localTimestamp) {
                 synchronized (myLock) {
                     HistoryData data = new HistoryData(localTimestamp, true);
-                    //historyManager.addToHistory(data);
+                    idealHistoryManager.addToHistory(data);
                     MetronomeSounds.INSTANCE.playStrong();
                 }
             }
@@ -55,7 +58,7 @@ public class PlotManager {
             public void onWeakBeat(long localTimestamp) {
                 synchronized (myLock) {
                     HistoryData data = new HistoryData(localTimestamp, false);
-                    //historyManager.addToHistory(data);
+                    idealHistoryManager.addToHistory(data);
                     MetronomeSounds.INSTANCE.playWeak();
                 }
             }
@@ -73,9 +76,12 @@ public class PlotManager {
     public void update(long currentTimestamp) {
         synchronized (myLock) {
             beatGenerator.update(currentTimestamp);
-            historyManager.update(currentTimestamp);
-            historyInterpolator.update(currentTimestamp);
-            myTargetSubject.onNext(new PlotData(0, historyInterpolator.getMagnitude(), 1));
+            actualHistoryManager.update(currentTimestamp);
+            idealHistoryManager.update(currentTimestamp);
+            actualHistoryInterpolator.update(currentTimestamp);
+            idealHistoryInterpolator.update(currentTimestamp);
+            myTargetSubject.onNext(new PlotData(
+                    actualHistoryInterpolator.getMagnitude(), idealHistoryInterpolator.getMagnitude(), 1));
         }
     }
 }
