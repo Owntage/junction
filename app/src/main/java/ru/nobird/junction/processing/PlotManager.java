@@ -4,6 +4,7 @@ import io.reactivex.subjects.PublishSubject;
 import ru.nobird.junction.model.PlotData;
 import ru.nobird.junction.model.Vec3f;
 import ru.nobird.junction.processing.HistoryManager.HistoryData;
+import ru.nobird.junction.sound.MetronomeSounds;
 
 /**
  * Created by Owntage on 11/25/2017.
@@ -38,12 +39,14 @@ public class PlotManager {
             public void onStrongBeat(long localTimestamp) {
                 HistoryData data = new HistoryData(localTimestamp, true);
                 historyManager.addToHistory(data);
+                MetronomeSounds.INSTANCE.playStrong();
             }
 
             @Override
             public void onWeakBeat(long localTimestamp) {
                 HistoryData data = new HistoryData(localTimestamp, false);
                 historyManager.addToHistory(data);
+                MetronomeSounds.INSTANCE.playWeak();
             }
         });
     }
