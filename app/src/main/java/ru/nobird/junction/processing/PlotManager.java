@@ -81,7 +81,8 @@ public class PlotManager {
             actualHistoryInterpolator.update(currentTimestamp);
             idealHistoryInterpolator.update(currentTimestamp);
             myTargetSubject.onNext(new PlotData(
-                    actualHistoryInterpolator.getMagnitude(), idealHistoryInterpolator.getMagnitude(), 1));
+                    actualHistoryInterpolator.getMagnitude(), idealHistoryInterpolator.getMagnitude(),
+                    actualHistoryManager.countStatistic(idealHistoryManager)));
         }
     }
 }

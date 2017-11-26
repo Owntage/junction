@@ -35,6 +35,26 @@ public class HistoryManager implements Updatable {
         return myHistory.getLast().timestamp > timestampMs;
     }
 
+    public HistoryData getInRange(long timestampMs, long delta) {
+        for (HistoryData data : myHistory) {
+            if (Math.abs(data.timestamp - timestampMs) <= delta) {
+                return data;
+            }
+        }
+        return null;
+    }
+
+    public float countStatistic(HistoryManager idealHistory) {
+        int idealSize = idealHistory.myHistory.size();
+        int matchCounter = 0;
+        for (HistoryData idealData : idealHistory.myHistory) {
+            if (getInRange(idealData.timestamp, 300) != null) {
+                matchCounter++;
+            }
+        }
+        return 1.0f - (float) matchCounter / (float) idealSize;
+    }
+
     public HistoryData getNewerThan(long timestampMs) {
         HistoryData bestMatch = null;
         for (HistoryData data : myHistory) {
