@@ -1,7 +1,6 @@
 package ru.nobird.junction.api
 
 import android.content.Context
-import android.util.Log
 import com.polidea.rxandroidble.RxBleClient
 import com.polidea.rxandroidble.scan.ScanSettings
 import rx.Subscription
@@ -18,14 +17,14 @@ class ScanClient(context: Context) {
                         .build()
                 // add filters if needed
         ).subscribe({ scanResult ->
-                    Log.d(TAG, "Scan result: " + scanResult)
+//                    Log.d(TAG, "Scan result: " + scanResult)
 
                     if (scanResult.bleDevice?.name?.startsWith(PREFIX) == true) {
-                        val msd = MoveSenseDevice(scanResult)
+                        val msd = MoveSenseDevice(scanResult.rssi, scanResult.bleDevice.macAddress, scanResult.bleDevice.name)
                         listener(msd)
                     }
                 }, { throwable ->
-                    Log.e(TAG, "Scan error: " + throwable)
+//                    Log.e(TAG, "Scan error: " + throwable)
                     disconnect()
                 }
         )
