@@ -80,9 +80,11 @@ public class PlotManager {
             idealHistoryManager.update(currentTimestamp);
             actualHistoryInterpolator.update(currentTimestamp);
             idealHistoryInterpolator.update(currentTimestamp);
+            float statistic1 = actualHistoryManager.countStatistic(idealHistoryManager);
+            float statistic2 = idealHistoryManager.countStatistic(actualHistoryManager);
             myTargetSubject.onNext(new PlotData(
                     actualHistoryInterpolator.getMagnitude(), idealHistoryInterpolator.getMagnitude(),
-                    actualHistoryManager.countStatistic(idealHistoryManager)));
+                    Math.sqrt(statistic1 * statistic2)));
         }
     }
 }
