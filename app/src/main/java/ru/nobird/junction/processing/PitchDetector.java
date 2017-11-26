@@ -62,7 +62,7 @@ public class PitchDetector {
     }
 
     private float countMagnitude(Vec3f vec) {
-        return Math.abs(
+        return (float) Math.sqrt(
                 vec.getX() * vec.getX() +
                 vec.getY() * vec.getY() +
                 vec.getZ() * vec.getZ());
