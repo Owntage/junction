@@ -21,10 +21,12 @@ class ConnectionPresenter(serial: String): PresenterBase<ConnectionView>() {
     private val plotManager = PlotManager(publisher)
 
     private val timerThread = Thread(Runnable {
-        while (!Thread.currentThread().isInterrupted) {
-            plotManager.update(System.currentTimeMillis())
-            Thread.sleep(10L)
-        }
+        try {
+            while (!Thread.currentThread().isInterrupted) {
+                plotManager.update(System.currentTimeMillis())
+                Thread.sleep(10L)
+            }
+        } catch (e: Exception) {}
     })
 
     init {
