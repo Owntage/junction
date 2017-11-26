@@ -28,10 +28,6 @@ class ScannerPresenter: PresenterBase<ScannerView>() {
         view.setDeviceAdapter(adapter)
     }
 
-    override fun detachView(view: ScannerView) {
-        super.detachView(view)
-    }
-
     override fun destroy() {
         scanClient.disconnect()
     }

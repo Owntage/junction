@@ -21,11 +21,16 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
         color = 0xFF58D088.toInt()
     }
 
+    private val paint2 = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = 0x7758D088
+    }
+
     override fun onDraw(canvas: Canvas) {
         val dx = width.toFloat() / data.size
         mult = height.toFloat() / 2
         for (i in 1 until data.size) {
             canvas.drawLine(dx * (i - 1), data[i - 1].value * mult, dx * i, data[i].value * mult, paint)
+            canvas.drawLine(dx * (i - 1), data[i - 1].value * mult, dx * (i - 1), height.toFloat(), paint2)
         }
     }
 
