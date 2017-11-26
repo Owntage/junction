@@ -19,34 +19,43 @@ public class PlotManager {
     private final HistoryManager historyManager = new HistoryManager();
     private final HistoryInterpolator historyInterpolator = new HistoryInterpolator(historyManager);
 
+    private final Object myLock = new Object();
 
     public PlotManager(PublishSubject<PlotData> targetSubject) {
         myTargetSubject = targetSubject;
         myPitchDetector = new PitchDetector(new PitchListener() {
             @Override
             public void onStrongBeat(long localTimestamp) {
-                //todo: write to history
+                synchronized (myLock) {
+                    //todo: write to history
+                }
             }
 
             @Override
             public void onWeakBeat(long localTimestamp) {
-                //todo: write to history
+                synchronized (myLock) {
+                    //todo: write to history
+                }
             }
         });
 
         beatGenerator = new BeatGenerator(60, 1, new PitchListener(){
             @Override
             public void onStrongBeat(long localTimestamp) {
-                HistoryData data = new HistoryData(localTimestamp, true);
-                historyManager.addToHistory(data);
-                MetronomeSounds.INSTANCE.playStrong();
+                synchronized (myLock) {
+                    HistoryData data = new HistoryData(localTimestamp, true);
+                    historyManager.addToHistory(data);
+                    MetronomeSounds.INSTANCE.playStrong();
+                }
             }
 
             @Override
             public void onWeakBeat(long localTimestamp) {
-                HistoryData data = new HistoryData(localTimestamp, false);
-                historyManager.addToHistory(data);
-                MetronomeSounds.INSTANCE.playWeak();
+                synchronized (myLock) {
+                    HistoryData data = new HistoryData(localTimestamp, false);
+                    historyManager.addToHistory(data);
+                    MetronomeSounds.INSTANCE.playWeak();
+                }
             }
         });
     }
@@ -60,9 +69,11 @@ public class PlotManager {
     }
 
     public void update(long currentTimestamp) {
-        beatGenerator.update(currentTimestamp);
-        historyManager.update(currentTimestamp);
-        historyInterpolator.update(currentTimestamp);
-        myTargetSubject.onNext(new PlotData(0, historyInterpolator.getMagnitude(), 1));
+        synchronized (myLock) {
+            beatGenerator.update(currentTimestamp);
+            historyManager.update(currentTimestamp);
+            historyInterpolator.update(currentTimestamp);
+            myTargetSubject.onNext(new PlotData(0, historyInterpolator.getMagnitude(), 1));
+        }
     }
 }
