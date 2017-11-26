@@ -5,6 +5,6 @@ package ru.nobird.junction.processing;
  */
 
 public interface PitchListener {
-    void onStrongBeat();
-    void onWeakBeat();
+    void onStrongBeat(long localTimestamp);
+    void onWeakBeat(long localTimestamp);
 }
