@@ -27,6 +27,7 @@
         </activity>
         <activity android:name=".ui.activity.PlotActivity" />
         <activity android:name=".ui.activity.ConnectionActivity" />
+        <activity android:name=".ui.activity.PickerActivity" />
     </application>
 
 </manifest>

@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">Ritmify</string>
+    <string name="app_name">Rhythmify</string>
     <string name="connection_progress_title">Connecting</string>
     <string name="connection_progress_msg">Trying to connect to MoveSense device</string>
+    <string name="time_signature">Time signature</string>
+    <string name="tempo">Tempo</string>
 </resources>

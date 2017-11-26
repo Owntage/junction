@@ -26,7 +26,7 @@ class ScannerActivity : BasePresenterActivity<ScannerPresenter, ScannerView>(), 
     override fun onSuccess(serial: String) {
         hideProgressDialogFragment(PROGRESS_DIALOG_TAG)
         Snackbar.make(findViewById(android.R.id.content), "Success", Snackbar.LENGTH_LONG).show()
-        ConnectionActivity.show(this, serial)
+        PickerActivity.show(this, serial)
     }
 
     override fun onError() {
