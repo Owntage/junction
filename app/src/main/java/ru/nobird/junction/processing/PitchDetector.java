@@ -9,8 +9,8 @@ import ru.nobird.junction.model.Vec3f;
 public class PitchDetector {
     private static final float G = 9.81f;
     private static final long DETECTION_BLOCK_TIME_MS = 100;
-    private static final float LINEAR_STRONG_BEAT = 10.0f;
-    private static final float LINEAR_WEAK_BEAT = 5.0f;
+    private static final float LINEAR_STRONG_BEAT = 17.0f;
+    private static final float LINEAR_WEAK_BEAT = 8.0f;
 
     private final PitchListener myPitchListener;
 
