@@ -2,6 +2,7 @@ package ru.nobird.junction
 
 import android.app.Application
 import android.content.Context
+import ru.nobird.junction.sound.MetronomeSounds
 
 class App: Application() {
     companion object {
@@ -11,5 +12,6 @@ class App: Application() {
     override fun onCreate() {
         super.onCreate()
         context = this.applicationContext
+        MetronomeSounds.init(this.applicationContext)
     }
 }
