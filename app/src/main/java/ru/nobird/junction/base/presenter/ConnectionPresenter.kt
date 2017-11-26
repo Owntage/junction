@@ -39,7 +39,7 @@ class ConnectionPresenter(serial: String): PresenterBase<ConnectionView>() {
         laSensor.subscribe(13).observeOn(AndroidSchedulers.mainThread()).subscribe ({
             //val a = AngularVelocity.Array(it.x / 10, it.y / 10, it.z / 10)
             //view?.onData(a)
-            plotManager.pingListener.onPingChanged(0)
+            plotManager.pingListener.onPingChanged(150)
             plotManager.realListener.onLinearAcceleration(
                     Vec3f(it.x.toFloat(),
                     it.y.toFloat(), it.z.toFloat()), System.currentTimeMillis());

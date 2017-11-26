@@ -29,7 +29,7 @@ public class PitchDetector {
             public void onLinearAcceleration(Vec3f acceleration, long timestamp) {
                 float relAcc = Math.abs(G - countMagnitude(acceleration));
                 boolean isStrongPitch = relAcc > LINEAR_STRONG_BEAT;
-                boolean isWeakPitch = relAcc > LINEAR_STRONG_BEAT;
+                boolean isWeakPitch = relAcc > LINEAR_WEAK_BEAT;
 
                 long localTimestamp = getCurTime() - myPing;
                 if ((isStrongPitch || isWeakPitch) &&
