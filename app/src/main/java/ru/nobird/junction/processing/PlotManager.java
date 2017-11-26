@@ -11,9 +11,11 @@ import ru.nobird.junction.model.Vec3d;
 public class PlotManager {
     private static final long PLOT_UPDATE_PERIOD_MS = 16L;
     private final PublishSubject<PlotData> myTargetSubject;
+    private final ShiftListener myShiftListener;
 
-    public PlotManager(PublishSubject<PlotData> targetSubject) {
+    public PlotManager(PublishSubject<PlotData> targetSubject, ShiftListener shiftListener) {
         myTargetSubject = targetSubject;
+        myShiftListener = shiftListener;
     }
 
     public SensorDataListener getRealListener() {
