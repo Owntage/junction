@@ -40,7 +40,7 @@ class ConnectionActivity: BasePresenterActivity<ConnectionPresenter, ConnectionV
     }
 
     override fun onData(pd: PlotData) {
-        plot.data.add(TimeData(System.nanoTime(), pd.idealMagnitude.toFloat()))
+        plot.data.add(pd)
         plot.invalidate()
     }
 
