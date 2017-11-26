@@ -5,7 +5,7 @@ package ru.nobird.junction.processing;
  */
 
 public class HistoryInterpolator implements Updatable {
-    private static final long LATENCY_MS = 200;
+    private static final long LATENCY_MS = 400;
     private static final long HOLD_MS = 200;
     private static final float F_HOLD_MS = 200.0f;
     private static final float STRONG_MAGNITUDE = 1.0f;

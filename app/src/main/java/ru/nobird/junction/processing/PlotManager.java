@@ -44,7 +44,7 @@ public class PlotManager {
             }
         });
 
-        beatGenerator = new BeatGenerator(60, 1, new PitchListener(){
+        beatGenerator = new BeatGenerator(30, 1, new PitchListener(){
             @Override
             public void onStrongBeat(long localTimestamp) {
                 synchronized (myLock) {

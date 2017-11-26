@@ -8,9 +8,11 @@ import ru.nobird.junction.model.Vec3f;
 
 public class PitchDetector {
     private static final float G = 9.81f;
-    private static final long DETECTION_BLOCK_TIME_MS = 100;
-    private static final float LINEAR_STRONG_BEAT = 17.0f;
-    private static final float LINEAR_WEAK_BEAT = 8.0f;
+    private static final long DETECTION_BLOCK_TIME_MS = 300;
+    private static final float LINEAR_STRONG_BEAT = 9999.0f;
+    private static final float LINEAR_WEAK_BEAT = 9999.0f;
+    private static final float STRONG_ANG_VEL = 9999;
+    private static final float WEAK_ANG_VEL = 200;
 
     private final PitchListener myPitchListener;
 
@@ -47,7 +49,20 @@ public class PitchDetector {
 
             @Override
             public void onAngularAcceleration(Vec3f acceleration, long timestamp) {
-                //todo: use angular acceleration too
+                float mag = countMagnitude(acceleration);
+                boolean isStrong = mag > STRONG_ANG_VEL;
+                boolean isWeak = mag > WEAK_ANG_VEL;
+                long localTimestamp = getCurTime() - myPing;
+                if ((isStrong || isWeak) &&
+                        ((localTimestamp - myPreviousAsyncCallTimestamp > DETECTION_BLOCK_TIME_MS) ||
+                                myPreviousAsyncCallTimestamp == -1)) {
+                    if (isStrong) {
+                        myPitchListener.onStrongBeat(localTimestamp);
+                    } else {
+                        myPitchListener.onWeakBeat(localTimestamp);
+                    }
+                    myPreviousAsyncCallTimestamp = localTimestamp;
+                }
             }
         };
     }
