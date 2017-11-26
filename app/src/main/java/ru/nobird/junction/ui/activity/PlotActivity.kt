@@ -23,8 +23,8 @@ class PlotActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    plot.data.add(it)
-                    plot.invalidate()
+//                    plot.data.add(it)
+//                    plot.invalidate()
                 }
 
         Thread(Runnable {
